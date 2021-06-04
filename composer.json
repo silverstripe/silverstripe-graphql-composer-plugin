@@ -16,7 +16,8 @@
         "lint-clean": "phpcbf src/"
     },
     "require": {
-        "composer-plugin-api": "^1.1 || ^2"
+        "composer-plugin-api": "^1.1 || ^2",
+        "silverstripe/graphql": "^4"
     },
     "require-dev": {
         "composer/composer": "^1.2 || 2"
