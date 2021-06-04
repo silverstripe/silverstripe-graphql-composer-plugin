@@ -1,0 +1,25 @@
+{
+    "name": "silverstripe/graphql-composer-plugin",
+    "description": "Helper plugin to generate the schema required for silverstripe/graphql",
+    "type": "composer-plugin",
+    "license": "BSD-3-Clause",
+    "autoload": {
+        "psr-4": {
+            "SilverStripe\\GraphQLComposerPlugin\\": "src/"
+        }
+    },
+    "extra": {
+        "class": "SilverStripe\\GraphQLComposerPlugin\\Plugin"
+    },
+    "scripts": {
+        "lint": "phpcs src/",
+        "lint-clean": "phpcbf src/"
+    },
+    "require": {
+        "composer-plugin-api": "^1.1 || ^2"
+    },
+    "require-dev": {
+        "composer/composer": "^1.2 || 2"
+    },
+    "minimum-stability": "dev"
+}
