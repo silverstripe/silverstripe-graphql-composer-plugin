@@ -17,7 +17,8 @@ Note: Requires plugin execution within composer, which is enabled by default in 
 composer require silverstripe/graphql-composer-plugin
 ```
 
-Note: You generally don't need to install this plugin
+Note: You generally don't need to install this plugin,
+it is a requirement of `silverstripe/graphql`.
 
 ## Configuration
 
