@@ -69,7 +69,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $this->io->write('<info>silverstripe/graphql-composer-plugin: Building schemas</info>');
 
             $keys = $schemas ? explode(',', $schemas) : array_keys(Schema::config()->get('schemas'));
-
             $keys = array_filter($keys, function ($key) {
                 return $key !== Schema::ALL;
             });
