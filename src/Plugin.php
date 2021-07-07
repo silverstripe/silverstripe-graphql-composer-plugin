@@ -6,10 +6,15 @@ use Composer\Plugin\PluginInterface;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Script\Event;
 use Composer\IO\IOInterface;
+use ReflectionClass;
 use SilverStripe\Core\CoreKernel;
+use SilverStripe\Core\DatabaselessKernel;
 use SilverStripe\GraphQL\Schema\Exception\EmptySchemaException;
 use SilverStripe\GraphQL\Schema\Schema;
 use SilverStripe\GraphQL\Schema\SchemaBuilder;
+use SilverStripe\ORM\Connect\MySQLDatabase;
+use SilverStripe\ORM\Connect\NullDatabase;
+use SilverStripe\ORM\DB;
 
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
@@ -57,10 +62,24 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             return;
         }
 
+        // Throw an exception when any logic in this execution is attempting to perform a query.
+        // GraphQL code generation can happen on environments which don't have a valid database connection,
+        // for example in CI when preparing a deployment package.
+        $db = new NullDatabase();
+        $db->setQueryErrorMessage('Database query detected during GraphQL code generation: %s');
+        $db->setErrorMessage('Database activity detected during GraphQL code generation.');
+        DB::set_conn($db);
+
         // Not using sake because it creates a HTTPApplication through cli-script.php.
         // This would trigger middlewares assuming a HTTP request execution
         // (rather than CLI), which then connect to the database that might not be available during this build.
-        $kernel = new CoreKernel(BASE_PATH, false);
+        $kernel = new DatabaselessKernel(BASE_PATH);
+
+        // Not booting error handling since it assumes a (faked) HTTP execution context
+        // through SilverStripe\Logging\HTTPOutputHandler, and can in some contexts fail
+        // because HTTP variables aren't defined (see cli-script.php).
+        $kernel->setBootErrorHandling(false);
+
         try {
             // Any composer update can introduce new config statements that require a manifest flush.
             // Since there is no way to pass flush=1 through composer commands, the safest way is to always perform the flush.
