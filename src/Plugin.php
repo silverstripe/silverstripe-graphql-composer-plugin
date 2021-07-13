@@ -24,6 +24,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected $io;
 
+    /**
+     * @var Composer
+     */
+    protected $composer;
+
     public static function getSubscribedEvents()
     {
         return array(
@@ -35,12 +40,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public function activate(Composer $composer, IOInterface $io)
     {
         $this->io = $io;
-
-        // https://github.com/composer/composer/issues/5998
-        $vendorDir = $composer->getConfig()->get('vendor-dir');
-        require_once $vendorDir . '/autoload.php';
-        // Required for BASE_PATH
-        require_once $vendorDir . '/silverstripe/framework/src/includes/constants.php';
+        $this->composer = $composer;
     }
 
     public function deactivate(Composer $composer, IOInterface $io)
@@ -61,6 +61,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if ($schemas === '') {
             return;
         }
+
+        // https://github.com/composer/composer/issues/5998
+        $vendorDir = $this->composer->getConfig()->get('vendor-dir');
+        require_once $vendorDir . '/autoload.php';
+        // Required for BASE_PATH
+        require_once $vendorDir . '/silverstripe/framework/src/includes/constants.php';
 
         // Throw an exception when any logic in this execution is attempting to perform a query.
         // GraphQL code generation can happen on environments which don't have a valid database connection,
