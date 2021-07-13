@@ -17,7 +17,8 @@
     },
     "require": {
         "composer-plugin-api": "^1.1 || ^2",
-        "silverstripe/graphql": "^4"
+        "silverstripe/graphql": "^4",
+        "silverstripe/framework": "^4.9 || 4.x-dev"
     },
     "require-dev": {
         "composer/composer": "^1.2 || 2"
